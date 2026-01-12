@@ -240,7 +240,10 @@ nyxt-proton/
 │   ├── mode.lisp                # Nyxt mode and commands
 │   └── main.lisp                # Public API and initialization
 └── tests/
-    └── main.lisp                # Tests (TODO)
+    ├── protocol-test.lisp       # Protocol tests
+    ├── adapter-test.lisp        # Adapter tests
+    ├── integration-test.lisp    # Integration tests (optional)
+    └── main.lisp                # Test suite entry point
 ```
 
 ### Adding a New Backend
@@ -260,10 +263,108 @@ To add support for another password manager:
 
 ### Running Tests
 
+Nyxt-Proton includes a comprehensive test suite covering protocol, adapter, and integration testing.
+
+#### Quick Start
+
+```bash
+# Run all tests (excluding integration tests)
+sbcl --eval '(ql:quickload :nyxt-proton/tests)' \
+     --eval '(asdf:test-system :nyxt-proton)' \
+     --quit
+```
+
+Or from the REPL:
+
 ```lisp
 (ql:quickload :nyxt-proton/tests)
 (asdf:test-system :nyxt-proton)
 ```
+
+#### Test Organization
+
+The test suite is organized into three main files:
+
+1. **`tests/protocol-test.lisp`** - Protocol and data structure tests
+   - PM-item, pm-credential, pm-otp creation
+   - URL normalization
+   - Error conditions
+   - Mock backend implementation
+
+2. **`tests/adapter-test.lisp`** - Proton Pass CLI adapter tests
+   - Backend creation and configuration
+   - Capabilities reporting
+   - URL origin matching
+   - JSON and item parsing
+   - Error handling
+
+3. **`tests/integration-test.lisp`** - Integration tests (optional)
+   - Real Proton Pass CLI interaction
+   - Search and retrieval operations
+   - Performance testing
+
+#### Running Integration Tests
+
+Integration tests interact with your actual Proton Pass vault and require:
+
+1. Proton Pass CLI installed and configured
+2. Active Proton Pass session (logged in)
+3. Environment variable set
+
+To run with integration tests:
+
+```bash
+# Set environment variable
+export NYXT_PROTON_RUN_INTEGRATION_TESTS=1
+
+# Run tests
+sbcl --eval '(ql:quickload :nyxt-proton/tests)' \
+     --eval '(asdf:test-system :nyxt-proton)' \
+     --quit
+```
+
+**Note**: Integration tests are SKIPPED by default to avoid requiring external dependencies.
+
+#### Test Coverage Summary
+
+To see what's tested:
+
+```lisp
+(ql:quickload :nyxt-proton/tests)
+(in-package :nyxt-proton/tests/main)
+(test-status)
+```
+
+#### Writing New Tests
+
+When adding new features, add corresponding tests:
+
+1. **Protocol changes**: Add tests to `tests/protocol-test.lisp`
+2. **Adapter logic**: Add tests to `tests/adapter-test.lisp`
+3. **Integration features**: Add tests to `tests/integration-test.lisp`
+
+Example test:
+
+```lisp
+(deftest test-new-feature
+  (testing "description of what's being tested"
+    (ok (= (my-function) expected-result))))
+```
+
+#### Continuous Integration
+
+For CI environments where Proton Pass CLI is not available:
+
+```bash
+# Run without integration tests (default)
+make test
+
+# Or explicitly disable
+unset NYXT_PROTON_RUN_INTEGRATION_TESTS
+sbcl --eval '(asdf:test-system :nyxt-proton)'
+```
+
+The test suite will automatically skip integration tests and report success for unit tests only.
 
 ## Troubleshooting
 
