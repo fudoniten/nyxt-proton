@@ -3,11 +3,25 @@
   :author "Peter Selby"
   :mailto "pselby@gmail.com"
   :license "LLGPL"
-  :depends-on ()
+  :depends-on (#:nyxt
+               #:quri
+               #:jonathan
+               #:trivial-clipboard
+               #:bordeaux-threads)
   :components ((:module "src"
+                :serial t
                 :components
-                ((:file "main"))))
-  :description ""
+                ((:file "protocol")
+                 (:module "adapters"
+                  :components
+                  ((:file "proton-pass-cli")))
+                 (:file "fill")
+                 (:file "mode")
+                 (:file "main"))))
+  :description "Proton Pass password manager integration for Nyxt browser"
+  :long-description
+  #.(uiop:read-file-string
+     (uiop:subpathname *load-pathname* "README.markdown"))
   :in-order-to ((test-op (test-op "nyxt-proton/tests"))))
 
 (defsystem "nyxt-proton/tests"
