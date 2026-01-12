@@ -30,7 +30,11 @@
   :depends-on ("nyxt-proton"
                "rove")
   :components ((:module "tests"
+                :serial t
                 :components
-                ((:file "main"))))
+                ((:file "protocol-test")
+                 (:file "adapter-test")
+                 (:file "integration-test")
+                 (:file "main"))))
   :description "Test system for nyxt-proton"
   :perform (test-op (op c) (symbol-call :rove :run c)))
