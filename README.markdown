@@ -1,0 +1,17 @@
+# Nyxt-Proton
+
+## Usage
+
+## Installation
+
+## Author
+
+* Peter Selby (pselby@gmail.com)
+
+## Copyright
+
+Copyright (c) 2026 Peter Selby (pselby@gmail.com)
+
+## License
+
+Licensed under the LLGPL License.
